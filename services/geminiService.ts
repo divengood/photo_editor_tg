@@ -1,14 +1,20 @@
-
 // Fix: Import GenerateContentResponse for proper typing.
 import { GoogleGenAI, Modality, GenerateContentResponse } from "@google/genai";
 
-const API_KEY = process.env.API_KEY;
-if (!API_KEY) {
-  throw new Error("API_KEY environment variable not set");
-}
-
-const ai = new GoogleGenAI({ apiKey: API_KEY });
 const model = 'gemini-2.5-flash-image';
+
+/**
+ * Lazily initializes and returns the GoogleGenAI client.
+ * Throws an error if the API key is not configured.
+ * This prevents the entire app from crashing on load if the key is missing.
+ */
+const getAiClient = () => {
+  const API_KEY = process.env.API_KEY;
+  if (!API_KEY) {
+    throw new Error("Google AI API Key is not configured. Please set the API_KEY environment variable in your deployment settings.");
+  }
+  return new GoogleGenAI({ apiKey: API_KEY });
+};
 
 // Fix: Use GenerateContentResponse type for the response parameter to improve type safety.
 const extractImage = (response: GenerateContentResponse): string => {
@@ -23,6 +29,7 @@ const extractImage = (response: GenerateContentResponse): string => {
 };
 
 export const generateImage = async (prompt: string): Promise<string> => {
+  const ai = getAiClient();
   const response = await ai.models.generateContent({
     model,
     contents: {
@@ -36,6 +43,7 @@ export const generateImage = async (prompt: string): Promise<string> => {
 };
 
 export const editImage = async (prompt: string, imageBase64: string, mimeType: string): Promise<string> => {
+  const ai = getAiClient();
   const base64Data = imageBase64.split(',')[1];
   
   const response = await ai.models.generateContent({
