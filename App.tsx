@@ -1,3 +1,5 @@
+// Fix: Add a triple-slash directive to include Vite's client types, which defines `import.meta.env` and resolves the TypeScript error.
+/// <reference types="vite/client" />
 
 import React, { useState, useCallback } from 'react';
 import { useLocalStorage } from './hooks/useLocalStorage';
@@ -15,8 +17,8 @@ type Status = {
   message: string;
 } | null;
 
-// Proactively check if the API key is missing. This is a build-time constant.
-const isApiKeyMissing = !process.env.VITE_API_KEY;
+// Proactively check if the API key is missing using Vite's standard method.
+const isApiKeyMissing = !import.meta.env.VITE_API_KEY;
 
 const ApiKeyWarning = () => (
   <div className="flex items-start gap-3 bg-red-900/50 border border-red-700 text-red-300 p-4 rounded-lg text-sm">
@@ -165,7 +167,7 @@ export default function App() {
                   <div className="text-xs text-gray-400 space-y-2 p-3 bg-gray-900/50 rounded-md">
                     <p>1. <strong>Bot Token:</strong> Talk to <a href="https://t.me/BotFather" target="_blank" rel="noopener noreferrer" className="text-cyan-400 underline">@BotFather</a> on Telegram and follow the instructions to create a new bot. It will give you a token.</p>
                     {/* Fix: Use a template literal to construct the URL dynamically and avoid JSX parsing errors. */}
-                    <p>2. <strong>Chat ID:</strong> Add your bot to the desired chat. Send a message in the chat. Then, visit <code>{`https://api.telegram.org/bot${botToken || '<YOUR_TOKEN>'}/getUpdates`}</code>. Look for the `"chat":{'{'}"id":...{'}'}` value in the JSON response.</p>
+                    <p>2. <strong>Chat ID:</strong> Add your bot to the desired chat. Send a message in the chat. Then, visit <code>{`https://api.telegram.org/bot${botToken || '<YOUR_TOKEN>'}/getUpdates`}</code>. Look for the `"chat":{"id":...}` value in the JSON response.</p>
                   </div>
                 )}
               </div>

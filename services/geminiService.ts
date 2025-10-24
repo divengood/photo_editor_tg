@@ -1,3 +1,5 @@
+// Fix: Add a triple-slash directive to include Vite's client types, which defines `import.meta.env` and resolves the TypeScript error.
+/// <reference types="vite/client" />
 
 // Fix: Import GenerateContentResponse for proper typing.
 import { GoogleGenAI, Modality, GenerateContentResponse } from "@google/genai";
@@ -11,7 +13,8 @@ const model = 'gemini-2.5-flash-image';
  */
 const getAiClient = () => {
   // Client-side code can only access env vars prefixed with VITE_
-  const API_KEY = process.env.VITE_API_KEY;
+  // Use import.meta.env for Vite projects, as it's the standard.
+  const API_KEY = import.meta.env.VITE_API_KEY;
   if (!API_KEY) {
     throw new Error("Google AI API Key is not configured. Please set the VITE_API_KEY environment variable in your deployment settings.");
   }
