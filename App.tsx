@@ -148,7 +148,7 @@ export default function App() {
                   <div className="text-xs text-gray-400 space-y-2 p-3 bg-gray-900/50 rounded-md">
                     <p>1. <strong>Bot Token:</strong> Talk to <a href="https://t.me/BotFather" target="_blank" rel="noopener noreferrer" className="text-cyan-400 underline">@BotFather</a> on Telegram and follow the instructions to create a new bot. It will give you a token.</p>
                     {/* Fix: Use a template literal to construct the URL dynamically and avoid JSX parsing errors. */}
-                    <p>2. <strong>Chat ID:</strong> Add your bot to the desired chat. Send a message in the chat. Then, visit <code>{`https://api.telegram.org/bot${botToken || '<YOUR_TOKEN>'}/getUpdates`}</code>. Look for the `"chat":{"id":...}` value in the JSON response.</p>
+                    <p>2. <strong>Chat ID:</strong> Add your bot to the desired chat. Send a message in the chat. Then, visit <code>{`https://api.telegram.org/bot${botToken || '<YOUR_TOKEN>'}/getUpdates`}</code>. Look for the `"chat":{'{'}"id":...{'}'}` value in the JSON response.</p>
                   </div>
                 )}
               </div>
