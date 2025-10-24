@@ -1,4 +1,3 @@
-// Fix: Use process.env.API_KEY to align with Gemini API guidelines and resolve TypeScript errors.
 import { GoogleGenAI, Modality, GenerateContentResponse } from "@google/genai";
 
 const model = 'gemini-2.5-flash-image';
@@ -9,16 +8,16 @@ const model = 'gemini-2.5-flash-image';
  * This prevents the entire app from crashing on load if the key is missing.
  */
 const getAiClient = () => {
-  // Fix: Use process.env.API_KEY as per Gemini API guidelines, which resolves Vite-related type errors.
+  // Fix: Per Gemini guidelines, the API key must be obtained from process.env.API_KEY.
+  // This resolves issues with Vite-specific environment variable types.
   const API_KEY = process.env.API_KEY;
   if (!API_KEY) {
-    // Fix: Update error message to reference API_KEY.
-    throw new Error("Google AI API Key is not configured. Please set the API_KEY environment variable in your deployment settings.");
+    // Fix: Updated error message to reference the correct API_KEY environment variable.
+    throw new Error("Google AI API Key is not configured. Please set the API_KEY environment variable.");
   }
   return new GoogleGenAI({ apiKey: API_KEY });
 };
 
-// Fix: Use GenerateContentResponse type for the response parameter to improve type safety.
 const extractImage = (response: GenerateContentResponse): string => {
   for (const part of response.candidates[0].content.parts) {
     if (part.inlineData) {

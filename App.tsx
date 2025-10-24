@@ -1,4 +1,3 @@
-// Fix: Use process.env.API_KEY to align with Gemini API guidelines and resolve TypeScript errors.
 import React, { useState, useCallback } from 'react';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { generateImage, editImage } from './services/geminiService';
@@ -15,7 +14,8 @@ type Status = {
   message: string;
 } | null;
 
-// Fix: Check for process.env.API_KEY as per Gemini API guidelines.
+// Fix: Per Gemini guidelines, the API key must be obtained from process.env.API_KEY.
+// This resolves issues with Vite-specific environment variable types.
 const isApiKeyMissing = !process.env.API_KEY;
 
 const ApiKeyWarning = () => (
@@ -23,7 +23,7 @@ const ApiKeyWarning = () => (
     <AlertTriangle className="w-6 h-6 mt-0.5 flex-shrink-0" />
     <div>
       <h3 className="font-semibold mb-1">Action Required: Google AI API Key is Missing</h3>
-      {/* Fix: Update warning message to reference API_KEY. */}
+      {/* Fix: Updated warning message to reference the correct API_KEY environment variable. */}
       <p className="text-red-400">
         The application cannot generate images because the Google AI API key has not been configured. The person who deployed this application needs to set the <code>API_KEY</code> environment variable in the deployment service settings (e.g., Netlify, Vercel).
       </p>
