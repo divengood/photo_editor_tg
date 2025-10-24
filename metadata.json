@@ -1,0 +1,5 @@
+{
+  "name": "Telegram AI Image Bot Web UI",
+  "description": "A web interface to generate images using Gemini AI and send them to a Telegram chat. Configure your Telegram bot token and chat ID to get started.",
+  "requestFramePermissions": []
+}
