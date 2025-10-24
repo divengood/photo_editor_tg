@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from 'react';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { generateImage, editImage } from './services/geminiService';
@@ -14,8 +15,7 @@ type Status = {
   message: string;
 } | null;
 
-// Fix: Per Gemini guidelines, the API key must be obtained from process.env.API_KEY.
-// This resolves issues with Vite-specific environment variable types.
+// Fix: Per coding guidelines, API key must be from process.env.API_KEY. This also resolves the TypeScript errors.
 const isApiKeyMissing = !process.env.API_KEY;
 
 const ApiKeyWarning = () => (
