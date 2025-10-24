@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { generateImage, editImage } from './services/geminiService';
 import { sendPhoto } from './services/telegramService';
@@ -14,6 +14,9 @@ type Status = {
   type: 'success' | 'error';
   message: string;
 } | null;
+
+// Proactively check if the API key is missing. This is a build-time constant.
+const isApiKeyMissing = !process.env.VITE_API_KEY;
 
 const ApiKeyWarning = () => (
   <div className="flex items-start gap-3 bg-red-900/50 border border-red-700 text-red-300 p-4 rounded-lg text-sm">
@@ -37,14 +40,6 @@ export default function App() {
   const [status, setStatus] = useState<Status>(null);
   const [showConfig, setShowConfig] = useState(true);
   const [showHelp, setShowHelp] = useState(false);
-  const [isApiKeyMissing, setIsApiKeyMissing] = useState(false);
-
-  useEffect(() => {
-    // Proactively check if the API key is missing. It must be prefixed with VITE_ to be exposed to the client.
-    if (!process.env.VITE_API_KEY) {
-      setIsApiKeyMissing(true);
-    }
-  }, []);
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
