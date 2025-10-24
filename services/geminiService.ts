@@ -1,3 +1,4 @@
+
 // Fix: Import GenerateContentResponse for proper typing.
 import { GoogleGenAI, Modality, GenerateContentResponse } from "@google/genai";
 
@@ -9,9 +10,10 @@ const model = 'gemini-2.5-flash-image';
  * This prevents the entire app from crashing on load if the key is missing.
  */
 const getAiClient = () => {
-  const API_KEY = process.env.API_KEY;
+  // Client-side code can only access env vars prefixed with VITE_
+  const API_KEY = process.env.VITE_API_KEY;
   if (!API_KEY) {
-    throw new Error("Google AI API Key is not configured. Please set the API_KEY environment variable in your deployment settings.");
+    throw new Error("Google AI API Key is not configured. Please set the VITE_API_KEY environment variable in your deployment settings.");
   }
   return new GoogleGenAI({ apiKey: API_KEY });
 };

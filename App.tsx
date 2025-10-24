@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { generateImage, editImage } from './services/geminiService';
 import { sendPhoto } from './services/telegramService';
@@ -15,6 +15,18 @@ type Status = {
   message: string;
 } | null;
 
+const ApiKeyWarning = () => (
+  <div className="flex items-start gap-3 bg-red-900/50 border border-red-700 text-red-300 p-4 rounded-lg text-sm">
+    <AlertTriangle className="w-6 h-6 mt-0.5 flex-shrink-0" />
+    <div>
+      <h3 className="font-semibold mb-1">Action Required: Google AI API Key is Missing</h3>
+      <p className="text-red-400">
+        The application cannot generate images because the Google AI API key has not been configured. The person who deployed this application needs to set the <code>VITE_API_KEY</code> environment variable in the deployment service settings (e.g., Netlify, Vercel).
+      </p>
+    </div>
+  </div>
+);
+
 export default function App() {
   const [botToken, setBotToken] = useLocalStorage('telegramBotToken', '');
   const [chatId, setChatId] = useLocalStorage('telegramChatId', '');
@@ -25,6 +37,14 @@ export default function App() {
   const [status, setStatus] = useState<Status>(null);
   const [showConfig, setShowConfig] = useState(true);
   const [showHelp, setShowHelp] = useState(false);
+  const [isApiKeyMissing, setIsApiKeyMissing] = useState(false);
+
+  useEffect(() => {
+    // Proactively check if the API key is missing. It must be prefixed with VITE_ to be exposed to the client.
+    if (!process.env.VITE_API_KEY) {
+      setIsApiKeyMissing(true);
+    }
+  }, []);
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -98,6 +118,8 @@ export default function App() {
         </header>
 
         <main className="bg-gray-800/50 rounded-2xl shadow-2xl shadow-black/30 backdrop-blur-sm border border-gray-700 p-6 space-y-6">
+          
+          {isApiKeyMissing && <ApiKeyWarning />}
 
           {/* --- CONFIG SECTION --- */}
           <div className="border border-gray-700 rounded-lg">
@@ -178,7 +200,8 @@ export default function App() {
               </label>
               <Button
                 onClick={handleGenerate}
-                disabled={isLoading || !prompt}
+                disabled={isLoading || !prompt || isApiKeyMissing}
+                title={isApiKeyMissing ? "Cannot generate: Google AI API Key is not configured." : ""}
                 className="w-full sm:w-auto"
               >
                 {isLoading && !generatedImage ? <Spinner /> : <><Bot className="w-5 h-5"/><span>Generate</span></>}
